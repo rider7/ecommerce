@@ -8,11 +8,11 @@ var productSchema = new Schema({
     lowercase: true,
     required: true
     },
-    description: {
+  description: {
       type: String,
       required: true
     },
-    price: {
+  price: {
       type: Number,
       required: true,
       min: 0

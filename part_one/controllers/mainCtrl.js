@@ -65,17 +65,15 @@ module.exports= {
    },
 
    getUserID: function(req, res, next){
-  User.findById(req.params.user_id)
-.populate('cart/product')
-.exec()
-.then(function(results){
-  return res.json(response)
-}, function(err){
-  return res.status(500).json(error)
-  });
-   },
+  User.findById(req.params.id)
+  .populate('cart')
+  .exec()
+  .then(function(results){
+  return res.json(results)
+  })
+ },
 
-    createOrderID: function(req, res, next){
+  createOrderID: function(req, res, next){
       var userId = req.params.userId;
    User.findById(userId, function(err, result) {
      if (err) {
@@ -91,11 +89,11 @@ module.exports= {
          res.sendStatus(500);
        }
        userObj.cart = [];
-       userObj.orders.push(mongoose.Types.ObjectId(result._id));
+       userObj.orders.push(result._id);
        userObj.save(function(err, result) {
-         if (err) {
+       if (err) {
            res.sendStatus(500);
-         }
+       }
          res.send(result);
        });
      })
@@ -103,7 +101,7 @@ module.exports= {
 },
 
      getOrder: function(req, res, next){
-       Order.find(req.query, function(err, response){
+       Order.find(req.body, function(err, result){
            if(err) {
              res.status(500).json(err)
            } else {
@@ -124,14 +122,14 @@ module.exports= {
 
        updateCartID: function(req, res, next){
          User.findById(req.params.user_id, function(error, response) {
-     if (err) {
+     if (error) {
        res.status(500).send(error)
      }
      var myUser = response;
-     var qty = req.query.qty / 1;
+     var qty = req.body.quantity / 1;
      var foundItem = -1;
      myUser.cart.forEach(function(cartItem, index) {
-       if (cartItem._id.toString() === req.query.itmId) {
+       if (cartItem.item.toString() === req.body.item) {
          foundItem = index
        }
      })
@@ -140,7 +138,7 @@ module.exports= {
        if (qty === 0) {
          myUser.cart.splice(foundItem, 1);
        } else {
-         myUser.cart[foundItem].qty = qty
+         myUser.cart[foundItem].quantity = qty
        }
      }
      saveUser(myUser, req, res);

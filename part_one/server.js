@@ -36,7 +36,7 @@ var corsOptions = {
 
 //CART
  app.post('/api/cart/:user_id', mainCtrl.createCartID);
- app.put('/api/cart/:user_id?qty=value&itmId=value', mainCtrl.updateCartID);
+ app.put('/api/cart/:user_id', mainCtrl.updateCartID);
 
 //LISTEN
  var port = 3000;

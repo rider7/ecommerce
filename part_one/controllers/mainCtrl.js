@@ -74,21 +74,22 @@ module.exports= {
  },
 
   createOrderID: function(req, res, next){
-      var userId = req.params.userId;
+      var userId = req.params.user_id;
    User.findById(userId, function(err, result) {
      if (err) {
        res.sendStatus(500);
      }
      var userObj = result;
      var userOrder = {};
-     userOrder.products = userObj.cart;
-     userOrder.userId = userId;
+     userOrder.item = userObj.cart;
+     userOrder.user = userId;
      var newOrder = new Order(userOrder);
      newOrder.save(function(err, result) {
        if (err) {
          res.sendStatus(500);
        }
        userObj.cart = [];
+       console.log(result)
        userObj.orders.push(result._id);
        userObj.save(function(err, result) {
        if (err) {
@@ -101,11 +102,11 @@ module.exports= {
 },
 
      getOrder: function(req, res, next){
-       Order.find(req.body, function(err, result){
+       Order.find(req.query, function(err, result){
            if(err) {
              res.status(500).json(err)
            } else {
-             res.json(response)
+             res.json(result)
            }
          });
      },

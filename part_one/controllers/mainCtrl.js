@@ -66,9 +66,10 @@ module.exports= {
 
    getUserID: function(req, res, next){
   User.findById(req.params.id)
-  .populate('cart')
+  .populate('cart.item') //populates the item in the cart collection with is the product schema
   .exec()
   .then(function(results){
+    console.log(results)
   return res.json(results)
   })
  },
